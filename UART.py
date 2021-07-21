@@ -90,7 +90,7 @@ plt.tight_layout()
 # Create a BPF
 # design filter
 nyq = 0.5 * samples # calculate the Nyquist frequency
-cutoff=200 # Frequency cutoff
+cutoff=190 # Frequency cutoff (190Hz data of spectrum noise signal, frecuency of start the maximun peaks on wave)
 order=5 # Order of filter
 low = cutoff / nyq
 b, a = sig.butter(order, low, btype='low', analog=False)
