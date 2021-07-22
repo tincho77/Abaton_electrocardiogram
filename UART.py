@@ -7,7 +7,11 @@ from matplotlib import style
 from math import pi
 import scipy.fftpack as sf
 import scipy.signal as sig
+from datetime import datetime
+from time import time, sleep
 import time
+import heartpy as hp
+import matplotlib.patches as mpatches
 
 samples = 4000 # Number of samples
 style.use('ggplot') # plot style
@@ -49,6 +53,8 @@ i=0
 out=0
 index = count()
 
+inicio = time.time()
+
 #Read EKG Signal
 while i==0:
     if serialInst.in_waiting:
@@ -62,6 +68,13 @@ while i==0:
         if out==samples:
             i=1        
 
+fin = time.time()
+time_to_data = fin-inicio
+frequency_samples = samples/time_to_data
+print(fin-inicio) # 1.0005340576171875 
+print("seg")
+print(frequency_samples)
+print("Hz")
 # Sabe EKG Signal on Buffer        
 data = np.loadtxt('test_data.txt')
 x = data
@@ -110,6 +123,20 @@ plt.ylabel('Magnitude')
 # Filter signal
 x_filt = sig.lfilter(b,a,x)
 
+#analysis ECG
+data = x
+fs = frequency_samples/2 #example file 0 is sampled at 100.0 Hz
+
+working_data, measures = hp.process(x_filt, fs, report_time=True)
+
+print(measures['bpm']) #returns BPM value
+print("BPM")
+print(measures['rmssd']) # returns RMSSD HRV measure
+print("RMSSD HRV")
+
+
+
+
 # Show Signal EKG Filtered
 plt.subplot(2,1,2)
 plt.ylim(ymax = 250, ymin = 100)
@@ -117,6 +144,9 @@ plt.plot(x_filt)
 plt.title('EKG Filtered Signal')
 plt.xlabel('Time(s)')
 plt.ylabel('Amplitude')
+bpm_patch = mpatches.Patch(color="none", label=str("%.2f" % measures['bpm'])+" BPM")
+hrv_patch = mpatches.Patch(color="none", label=str("%.2f" % measures['rmssd'])+" HRV")
+plt.legend(handles=[bpm_patch,hrv_patch])
 plt.tight_layout() 
 
 # PLOT SHOW (Show on the screen)
