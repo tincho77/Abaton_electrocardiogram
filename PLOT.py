@@ -10,7 +10,7 @@ import scipy.signal as sig
 import time
 import heartpy as hp
 
-samples = 4000
+samples = 8000
 nfile = "test_data.txt" # EKG signal buffer
 f=open(nfile,'r')
 
@@ -47,9 +47,9 @@ plt.tight_layout()
 
 #analysis ECG
 data = x
-fs = 200.0 #example file 0 is sampled at 100.0 Hz
+fs = 200 #example file 0 is sampled at 100.0 Hz
 
-working_data, measures = hp.process(x_filt, fs, report_time=False)
+working_data, measures = hp.process(x, fs, report_time=False)
 
 
 print(measures['bpm']) #returns BPM value
