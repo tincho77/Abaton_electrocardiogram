@@ -13,7 +13,7 @@ import time
 import heartpy as hp
 import matplotlib.patches as mpatches
 
-samples = 4000 # Number of samples
+samples = 14000 # Number of samples
 style.use('ggplot') # plot style
 
 nfile = "test_data.txt" # EKG signal buffer
@@ -51,24 +51,25 @@ y_vals=[]
 x_vals=[]
 
 # Wait of user place fingers on sensors
-time.sleep(3)
+time.sleep(10)
 
 i=0
 out=0
 index = count()
 
-inicio = round(time.time() * 1000)
 
+f=open(nfile,'a')
+ftime = open(file,'a')
+inicio = round(time.time() * 1000)
 #Read EKG Signal
 while i==0:
-    if serialInst.in_waiting:
-        f=open(nfile,'a')
-        ftime = open(file,'a')
+    
+    if serialInst.in_waiting:    
         packet = serialInst.read()
+        time_data =str((round(time.time() * 1000))-inicio)+'\n'
         data = str(int(binascii.hexlify(packet), base=16))
         data = data+'\n'
         f.write(data)
-        time_data =str((round(time.time() * 1000))-inicio)+'\n'
         ftime.write(time_data)
         out=next(index)
         print(str((out*100)/samples)+'%')
@@ -105,7 +106,7 @@ plt.tight_layout()
 # Create a BPF
 # design filter
 nyq = 0.5 * samples # calculate the Nyquist frequency
-cutoff=190 # Frequency cutoff (190Hz data of spectrum noise signal, frecuency of start the maximun peaks on wave)
+cutoff=400 # Frequency cutoff (190Hz data of spectrum noise signal, frecuency of start the maximun peaks on wave)
 order=5 # Order of filter
 low = cutoff / nyq
 b, a = sig.butter(order, low, btype='low', analog=False)
@@ -129,7 +130,7 @@ x_filt = sig.lfilter(b,a,x)
 
 #if you have a ms-based timer:
 mstimer_data = hp.get_data('test_time.txt')
-fs = hp.get_samplerate_mstimer(mstimer_data)
+fs = hp.get_samplerate_mstimer(mstimer_data)/1.3 #Correction factor to time of sample
 print("fs= ")
 print(fs)
 
@@ -158,7 +159,7 @@ plt.legend(handles=[bpm_patch,hrv_patch])
 plt.tight_layout() 
 
 #show heart ratepeak detection
-data = x_filt
+data = x
 working_data, measures = hp.process(data, fs)
 hp.plotter(working_data, measures)
 
