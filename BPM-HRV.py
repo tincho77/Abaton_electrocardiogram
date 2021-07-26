@@ -130,7 +130,7 @@ x_filt = sig.lfilter(b,a,x)
 
 #if you have a ms-based timer:
 mstimer_data = hp.get_data('test_time.txt')
-fs = hp.get_samplerate_mstimer(mstimer_data)/1.3 #Correction factor to time of sample
+fs = hp.get_samplerate_mstimer(mstimer_data)/1.73 #Correction factor to time of sample
 print("fs= ")
 print(fs)
 
