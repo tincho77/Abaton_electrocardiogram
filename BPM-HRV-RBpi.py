@@ -1,8 +1,8 @@
 from itertools import count
 import serial.tools.list_ports
 import binascii
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 from matplotlib import style
 from math import pi
 import scipy.fftpack as sf
@@ -36,17 +36,19 @@ for onePort in ports:
     print(str(onePort))
 
 # Select PORT
-val = input("select port: COM")
-
-for x in range(0,len(portList)):
-    if portList[x].startswith("COM" + str(val)):
-        portVar = "COM" + str(val)
-        print(portList[x])
+#val = input("select port: ttyAMA")
+#portVar=""
+#for x in range(0,len(portList)):
+#    if portList[x].startswith("ttyAMA" + str(val)):
+#        portVar = "/dev/ttyAMA" + str(val)
+#        print(portList[x])
 
 # Set PORT selected
-serialInst.baudrate = 115200
-serialInst.port = portVar
-serialInst.open()
+#serialInst.baudrate = 115200
+#serialInst.port = portVar
+#serialInst.open()
+serialInst = serial.Serial("/dev/ttyS0", baudrate = 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=1)
+#serialInst.open()
 y_vals=[]
 x_vals=[]
 
@@ -64,18 +66,18 @@ inicio = round(time.time() * 1000)
 #Read EKG Signal
 while i==0:
     
-    if serialInst.in_waiting:    
-        packet = serialInst.read()
-        time_data =str((round(time.time() * 1000))-inicio)+'\n'
-        data = str(int(binascii.hexlify(packet), base=16))
-        data = data+'\n'
-        f.write(data)
-        ftime.write(time_data)
-        out=next(index)
-        print(str((out*100)/samples)+'%')
+    #if serialInst.in_waiting:    
+    packet = serialInst.read()
+    time_data =str((round(time.time() * 1000))-inicio)+'\n'
+    data = str(int(binascii.hexlify(packet), base=16))
+    data = data+'\n'
+    f.write(data)
+    ftime.write(time_data)
+    out=next(index)
+    print(str((out*100)/samples)+'%')
         
-        if out==samples:
-            i=1        
+    if out==samples:
+        i=1        
 
 
 # Sabe EKG Signal on Buffer        
