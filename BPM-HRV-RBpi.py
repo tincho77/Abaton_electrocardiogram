@@ -74,8 +74,8 @@ while i==0:
     f.write(data)
     ftime.write(time_data)
     out=next(index)
-    print(str((out*100)/samples)+'%')
-        
+    #print(str((out*100)/samples)+'%')
+    #print(str(data));    
     if out==samples:
         i=1        
 
@@ -89,6 +89,7 @@ plt.figure(1)
 plt.subplot(2,1,1)
 plt.plot(x); plt.title('Noisy EKG Wave')
 plt.xlabel('Time(s)'); plt.ylabel('Amplitude')
+plt.xlim([6000,9000])
 
 
 # Take spectral analysis
@@ -141,12 +142,15 @@ print(fs)
 
 working_data, measures = hp.process(x, fs, report_time=True)
 
-print(measures['bpm']) #returns BPM value
-print("BPM")
-print(measures['rmssd']) # returns RMSSD HRV measure
-print("RMSSD HRV")
 
-
+print("beats per minute (BPM)= %s" %measures['bpm']) #returns BPM value
+print("interbeat interval (IBI)= %s"%measures['ibi']) # returns ibi measure
+print("standard deviation of RR intervals (SDNN)= %s" %measures['sdnn']) # returns sdnn measure
+print("standard deviation of successive differences (SDSD)= %s" %measures['sdsd']) # returns sdsd measure
+print("root mean square of successive differences (RMSSD)= %s" %measures['rmssd']) # returns RMSSD HRV measure
+print("proportion of successive differences above 20ms (pNN20)= %s" %measures['pnn20']) # returns pnn20 measure
+print("proportion of successive differences above 50ms (pNN50)= %s" %measures['pnn50']) # returns pnn50 measure
+print('breathing rate is: %s Hz' %measures['breathingrate'])
 
 # Show Signal EKG Filtered
 plt.subplot(2,1,2)
@@ -155,6 +159,7 @@ plt.plot(x_filt)
 plt.title('EKG Filtered Signal')
 plt.xlabel('Time(s)')
 plt.ylabel('Amplitude')
+plt.xlim([6000,9000])
 bpm_patch = mpatches.Patch(color="none", label=str("%.2f" % measures['bpm'])+" BPM")
 hrv_patch = mpatches.Patch(color="none", label=str("%.2f" % measures['rmssd'])+" HRV")
 plt.legend(handles=[bpm_patch,hrv_patch])
@@ -164,6 +169,7 @@ plt.tight_layout()
 data = x
 working_data, measures = hp.process(data, fs)
 hp.plotter(working_data, measures)
+#hp.segment_plotter(working_data, measures,title='Hello world',path='',start=0,end=None, step=1)
 
 # PLOT SHOW (Show on the screen)
 plt.show()   
