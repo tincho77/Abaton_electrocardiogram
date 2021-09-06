@@ -13,7 +13,7 @@ import time
 import heartpy as hp
 import matplotlib.patches as mpatches
 
-samples = 14000 # Number of samples
+samples = 14000 # Number of samples (14000)
 style.use('ggplot') # plot style
 
 nfile = "test_data.txt" # EKG signal buffer
